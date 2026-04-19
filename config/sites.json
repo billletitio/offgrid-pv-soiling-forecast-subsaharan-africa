@@ -1,0 +1,34 @@
+{
+  "sites": [
+    {
+      "id": "esoit_001",
+      "name": "Esoit Village (Eiti Primary School)",
+      "latitude": -1.8304,
+      "longitude": 36.8245,
+      "country": "Kenya",
+      "county": "Kajiado",
+      "sub_location": "Esoit Village, near Olkejuado Boys High School",
+      "elevation_m": 1200,
+      "partner": "SACDEP",
+      "notes": "Phase 2 fieldwork site. Kajiado County - off-grid community, Eiti Primary area. Southern Rift Valley semi-arid zone. Coordinates verified April 2026."
+    },
+    {
+      "id": "kalinditi_001",
+      "name": "Kalinditi Village, Kabati",
+      "latitude": -1.0650,
+      "longitude": 38.0250,
+      "country": "Kenya",
+      "county": "Kitui",
+      "sub_location": "Kwa Ngunzu / Kilinditui Village",
+      "elevation_m": 1100,
+      "partner": "SACDEP",
+      "notes": "Primary fieldwork site. Kitui County - semi-arid, high solar potential, active SACDEP community solar installation."
+    }
+  ],
+  "fetch_settings": {
+    "start_year": 2000,
+    "end_year": 2023,
+    "temporal_resolution": "daily",
+    "community": "RE"
+  }
+}
