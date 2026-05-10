@@ -18,22 +18,33 @@ def load_site_csv(filepath):
 def monthly_summary(df):
     cols = ["GHI_Wm2", "DNI_Wm2", "ClearSkyGHI_Wm2", "WindSpeed_10m_ms", "Temp_2m_C", "Precip_mm", "CloudAmount_pct"]
     available = [c for c in cols if c in df.columns]
-    monthly = df[available].resample("M").mean()   # changed ME to M
+    # Handle pandas 3.0+ freq changes (M -> ME, Y -> YE)
+    try:
+        monthly = df[available].resample("ME").mean()
+    except ValueError:
+        monthly = df[available].resample("M").mean()
     monthly.index = monthly.index.strftime("%Y-%m")
     return monthly
 
 def annual_summary(df):
     result = {}
+    # Handle pandas 3.0+ freq changes (Y -> YE)
+    year_freq = "YE"
+    try:
+        df.resample("YE").mean(numeric_only=True)
+    except ValueError:
+        year_freq = "Y"
+
     if "GHI_Wm2" in df.columns:
         df["PSH"] = df["GHI_Wm2"] / 1000
-        result["PSH_annual_mean"] = df["PSH"].resample("Y").mean()   # changed YE to Y
-        result["GHI_annual_total_kWh_m2"] = df["GHI_Wm2"].resample("Y").sum() / 1000
+        result["PSH_annual_mean"] = df["PSH"].resample(year_freq).mean()
+        result["GHI_annual_total_kWh_m2"] = df["GHI_Wm2"].resample(year_freq).sum() / 1000
     if "WindSpeed_10m_ms" in df.columns:
-        result["Wind10m_annual_mean_ms"] = df["WindSpeed_10m_ms"].resample("Y").mean()
+        result["Wind10m_annual_mean_ms"] = df["WindSpeed_10m_ms"].resample(year_freq).mean()
     if "Precip_mm" in df.columns:
-        result["Precip_annual_total_mm"] = df["Precip_mm"].resample("Y").sum()
+        result["Precip_annual_total_mm"] = df["Precip_mm"].resample(year_freq).sum()
     if "Temp_2m_C" in df.columns:
-        result["Temp_annual_mean_C"] = df["Temp_2m_C"].resample("Y").mean()
+        result["Temp_annual_mean_C"] = df["Temp_2m_C"].resample(year_freq).mean()
     out = pd.DataFrame(result)
     out.index = out.index.year
     out.index.name = "year"
@@ -74,7 +85,18 @@ def offgrid_score(annual):
             temp_score = 5
         scores["temp"] = temp_score
         notes.append(f"Temp  — avg annual: {temp:.1f}°C → {temp_score}/15 pts")
-    total = sum(scores.values())
+
+    # Turbine Soiling Risk Assessment (High risk in dry/windy/dusty sites)
+    if "Wind10m_annual_mean_ms" in annual.columns and "Precip_annual_total_mm" in annual.columns:
+        ws = annual["Wind10m_annual_mean_ms"].mean()
+        rain = annual["Precip_annual_total_mm"].mean()
+        # High wind + low rain = high soiling
+        risk_score = (ws * 10) - (rain / 50)
+        risk_level = "High" if risk_score > 30 else "Moderate" if risk_score > 15 else "Low"
+        scores["turbine_soiling_risk"] = risk_score
+        notes.append(f"Turbine — Soiling Risk Level: {risk_level} (Score: {risk_score:.1f})")
+
+    total = sum([v for k,v in scores.items() if k != "turbine_soiling_risk"])
     return {
         "total_score": round(total, 1),
         "max_score": 100,
