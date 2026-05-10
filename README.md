@@ -93,6 +93,7 @@ NASA POWER API          MERRA-2 GES DISC
 | `data_processor.py` | Computes monthly/annual summaries, peak solar hours (PSH), and an off-grid suitability score per site |
 | `merra2_fetcher.py` | NASA GES DISC OPeNDAP client — fetches MERRA-2 aerosol reanalysis (AOD, dust, black carbon, Angstrom exponent) |
 | `xgboost_baseline.py` | Trains and evaluates XGBoost soiling forecast model on merged POWER + MERRA-2 features; outputs SHAP plots and metrics |
+| `turbine_degradation_forecast.py` | **New:** Turbine Blade degradation forecast module ‚Äî models wind-dust flux and impact energy to predict blade soiling risk |
 
 ---
 
@@ -141,6 +142,9 @@ python src/data_processor.py
 
 # 6. Train the XGBoost baseline model
 python src/xgboost_baseline.py
+
+# 7. Run Turbine Blade degradation forecast
+python src/turbine_degradation_forecast.py
 ```
 
 ---

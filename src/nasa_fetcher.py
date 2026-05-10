@@ -27,7 +27,9 @@ PARAMETERS = {
     # Wind
     "WS2M":               "WindSpeed_2m_ms",   # Wind speed at 2 m
     "WS10M":              "WindSpeed_10m_ms",  # Wind speed at 10 m
+    "WS50M":              "WindSpeed_50m_ms",  # Wind speed at 50 m
     "WD10M":              "WindDir_10m_deg",   # Wind direction at 10 m
+    "WD50M":              "WindDir_50m_deg",   # Wind direction at 50 m
     # Temperature & humidity
     "T2M":                "Temp_2m_C",         # Temperature at 2 m
     "T2M_MAX":            "TempMax_2m_C",
