@@ -19,6 +19,7 @@ import json
 import pandas as pd
 import numpy as np
 import xgboost as xgb
+import matplotlib.pyplot as plt
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
@@ -131,6 +132,16 @@ def train_turbine_model(site_id: str, df: pd.DataFrame):
     model_path = os.path.join(MODEL_DIR, f"{site_id}_turbine_degradation_xgb.json")
     model.save_model(model_path)
     print(f"Model saved to {model_path}")
+
+    # Visualization of results
+    plt.figure(figsize=(12, 6))
+    plt.plot(y.index[-365:], y.values[-365:], label="Actual (Proxy)")
+    plt.plot(y.index[-365:], model.predict(X.iloc[-365:]), label="Forecast", alpha=0.7)
+    plt.title(f"Turbine Degradation Risk Forecast - Last 365 Days ({site_id})")
+    plt.legend()
+    plot_path = os.path.join(MODEL_DIR, f"{site_id}_forecast_plot.png")
+    plt.savefig(plot_path)
+    print(f"Forecast plot saved to {plot_path}")
 
     # Feature Importance
     importance = pd.DataFrame({"feature": X.columns, "importance": model.feature_importances_}).sort_values("importance", ascending=False)

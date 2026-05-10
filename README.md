@@ -1,8 +1,8 @@
-# offgrid-pv-soiling-forecast-subsaharan-africa
+# Offgrid PV and Turbine Blade Degradation Soiling Forecast
 
 > **Developed and validated in Kenya; designed for broader applicability across sub-Saharan Africa.**
 
-Soiling forecast toolkit for off-grid PV systems — fetches NASA POWER & MERRA-2 aerosol reanalysis data, engineers climate features, and trains an XGBoost baseline model. Developed and validated in Kenya; designed for broader applicability across sub-Saharan Africa.
+Comprehensive soiling and degradation forecast toolkit for off-grid solar and wind energy systems — fetches NASA POWER & MERRA-2 aerosol reanalysis data, engineers climate features, and trains XGBoost models for energy yield optimization. Developed and validated in Kenya; designed for broader applicability across sub-Saharan Africa.
 
 ---
 
