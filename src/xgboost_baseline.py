@@ -266,11 +266,20 @@ def train_and_save(
 
     # Use last 10% as eval set for early stopping
     split_point = int(len(X) * 0.9)
+    X_train_f, X_val_f = X.iloc[:split_point], X.iloc[split_point:]
+    y_train_f, y_val_f = y.iloc[:split_point], y.iloc[split_point:]
+
     final_model.fit(
-        X.iloc[:split_point], y.iloc[:split_point],
-        eval_set=[(X.iloc[split_point:], y.iloc[split_point:])],
+        X_train_f, y_train_f,
+        eval_set=[(X_train_f, y_train_f), (X_val_f, y_val_f)],
         verbose=False,
     )
+
+    # Save evaluation history for plotting
+    evals_result = final_model.evals_result()
+    history_path = os.path.join(output_dir, f"{site_id}_eval_history.json")
+    with open(history_path, "w") as f:
+        json.dump(evals_result, f)
 
     # ── Feature importance ────────────────────────────────────────────────
     importance = pd.DataFrame({
